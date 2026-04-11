@@ -68,15 +68,67 @@ entrypoint.sh       Docker entrypoint (manual + announce modes)
    go test ./...
    go vet ./...
    ```
-4. Write clear, concise commit messages.
-5. Open a PR against `main`.
+4. Open a PR against `main`.
+
+### Commit Messages and PR Titles
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/). **PR titles are enforced by CI** and must match this format:
+
+```
+<type>[optional scope]: <description>
+```
+
+The description must start with a lowercase letter.
+
+#### Types
+
+| Type | When to use |
+|---|---|
+| `feat` | A new feature |
+| `fix` | A bug fix |
+| `docs` | Documentation only |
+| `style` | Formatting, missing semicolons, etc. (no code change) |
+| `refactor` | Code change that neither fixes a bug nor adds a feature |
+| `perf` | Performance improvement |
+| `test` | Adding or updating tests |
+| `build` | Build system or dependency changes |
+| `ci` | CI/CD configuration changes |
+| `chore` | Maintenance tasks (no production code change) |
+| `revert` | Reverting a previous commit |
+
+#### Scopes (optional)
+
+`runner`, `config`, `relay`, `session`, `docker`, `install`, `upgrade`, `announce`, `daemon`, `deps`
+
+#### Examples
+
+```
+feat: add session timeout support
+fix(relay): handle reconnect on network change
+docs: update install instructions
+build(deps): bump golang.org/x/net to 0.38.0
+refactor(config): simplify config file parsing
+test(session): add asciicast writer edge cases
+ci: add PR title lint workflow
+```
+
+#### Breaking Changes
+
+Append `!` after the type/scope for breaking changes:
+
+```
+feat!: change default relay URL format
+fix(config)!: rename SHELLRELAY_URL to SHELLRELAY_RELAY_URL
+```
 
 ### Pull Request Guidelines
 
+- **PR title must follow Conventional Commits** (CI will check this).
 - Keep PRs focused on a single change.
 - Add tests for new functionality.
 - Update documentation if behavior changes.
 - Ensure CI passes before requesting review.
+- Since we use squash merge, the PR title becomes the commit message in `main`.
 
 ## Coding Standards
 
@@ -88,9 +140,15 @@ entrypoint.sh       Docker entrypoint (manual + announce modes)
 
 ## Release Process
 
-Releases are automated via GitHub Actions. When changes are pushed to `main`:
-1. The CI workflow runs tests and vet.
-2. The release workflow bumps the patch version, builds 4 platform binaries (darwin/arm64, darwin/amd64, linux/arm64, linux/amd64), and creates a GitHub release.
+Releases are managed through the `VERSION` file:
+
+1. Bump the version in `VERSION` as part of your PR.
+2. Once merged to `main`, the release workflow automatically:
+   - Runs tests
+   - Builds 4 platform binaries (darwin/arm64, darwin/amd64, linux/arm64, linux/amd64)
+   - Generates checksums
+   - Creates a GitHub release with the tag from `VERSION`
+3. If the tag already exists, the workflow skips (safe for code-only PRs without a version bump).
 
 ## License
 
