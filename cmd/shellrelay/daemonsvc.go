@@ -63,7 +63,7 @@ var plistTemplate = template.Must(template.New("plist").Parse(`<?xml version="1.
 
 var serviceTemplate = template.Must(template.New("service").Parse(`[Unit]
 Description=ShellRelay Runner
-Documentation=https://github.com/licongchen200/shellrelay
+Documentation=https://github.com/ShellRelay/runner
 After=network-online.target
 Wants=network-online.target
 

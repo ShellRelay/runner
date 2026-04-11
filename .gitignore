@@ -2,6 +2,10 @@
 /shellrelay
 dist/
 
+# Environment / secrets
+.env
+.env.*
+
 # macOS
 .DS_Store
 
