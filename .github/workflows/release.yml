@@ -7,7 +7,6 @@ on:
       - '**.go'
       - 'go.mod'
       - 'go.sum'
-      - 'VERSION'
       - 'Dockerfile'
       - 'entrypoint.sh'
       - '.github/workflows/release.yml'
@@ -36,58 +35,27 @@ jobs:
       - name: Test
         run: go test ./...
 
-      # ── Bump patch version ────────────────────────────────────────────────
-      - name: Bump patch version
+      # ── Determine version from VERSION file ────────────────────────────────
+      - name: Read version
         id: version
         run: |
-          CURRENT=$(cat VERSION | tr -d '[:space:]')
-          MAJOR=$(echo $CURRENT | cut -d. -f1)
-          MINOR=$(echo $CURRENT | cut -d. -f2)
-          PATCH=$(echo $CURRENT | cut -d. -f3)
-          NEW="$MAJOR.$MINOR.$((PATCH + 1))"
-          echo "VERSION=$NEW" >> "$GITHUB_OUTPUT"
-          echo "TAG=v$NEW" >> "$GITHUB_OUTPUT"
-          echo "Bumped $CURRENT → $NEW"
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          TAG="v${VERSION}"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
 
-      # ── Commit version bump via GitHub API (bypasses branch rulesets) ────
-      - name: Commit version bump
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=${{ steps.version.outputs.VERSION }}
-
-          # Get current VERSION file SHA
-          FILE_SHA=$(gh api repos/${{ github.repository }}/contents/VERSION \
-            --jq '.sha')
-
-          # Update VERSION file via API
-          gh api repos/${{ github.repository }}/contents/VERSION \
-            --method PUT \
-            -f message="chore: bump version to ${VERSION} [skip ci]" \
-            -f content="$(echo -n "$VERSION" | base64)" \
-            -f sha="$FILE_SHA" \
-            -f branch="main" \
-            --jq '.commit.sha'
-
-      # ── Create tag via API ─────────────────────────────────────────────
-      - name: Create tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG=${{ steps.version.outputs.TAG }}
-
-          # Get the latest commit SHA on main (the version bump we just made)
-          COMMIT_SHA=$(gh api repos/${{ github.repository }}/git/ref/heads/main \
-            --jq '.object.sha')
-
-          # Create the tag object
-          gh api repos/${{ github.repository }}/git/refs \
-            --method POST \
-            -f ref="refs/tags/$TAG" \
-            -f sha="$COMMIT_SHA"
+          # Check if this tag already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "SKIP=true" >> "$GITHUB_OUTPUT"
+            echo "Tag $TAG already exists — skipping release"
+          else
+            echo "SKIP=false" >> "$GITHUB_OUTPUT"
+            echo "Will release $TAG"
+          fi
 
       # ── Build 4 platform binaries ─────────────────────────────────────────
       - name: Build binaries
+        if: steps.version.outputs.SKIP == 'false'
         run: |
           VERSION=${{ steps.version.outputs.VERSION }}
           mkdir -p dist
@@ -104,20 +72,23 @@ jobs:
 
       # ── Generate checksums ────────────────────────────────────────────────
       - name: Generate checksums
+        if: steps.version.outputs.SKIP == 'false'
         working-directory: dist
         run: |
           sha256sum shellrelay-* > checksums.txt
           echo "Generated checksums:"
           cat checksums.txt
 
-      # ── Publish GitHub Release ────────────────────────────────────────────
+      # ── Publish GitHub Release (creates the tag automatically) ────────────
       - name: Create GitHub Release
+        if: steps.version.outputs.SKIP == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${{ steps.version.outputs.TAG }}" \
             --title "ShellRelay Runner ${{ steps.version.outputs.TAG }}" \
             --generate-notes \
+            --target main \
             dist/shellrelay-darwin-arm64 \
             dist/shellrelay-darwin-amd64 \
             dist/shellrelay-linux-amd64 \
