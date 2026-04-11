@@ -3,6 +3,7 @@ package relay
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -16,9 +17,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ShellRelay/runner/internal/session"
 	"github.com/creack/pty"
 	"github.com/gorilla/websocket"
-	"github.com/ShellRelay/runner/internal/session"
 )
 
 // Message types exchanged with the relay server
@@ -312,7 +313,10 @@ func runSession(cw *connWriter, cfg Config, ptmxPtr **os.File, mu *sync.Mutex, s
 			}
 		}
 		if err != nil {
-			if err != io.EOF {
+			// On Linux (and inside Docker), PTY master reads return EIO
+			// when the slave side is closed (child process exits). This is
+			// normal POSIX behaviour — treat it the same as EOF.
+			if err != io.EOF && !errors.Is(err, syscall.EIO) {
 				log.Printf("[runner] pty read: %v", err)
 			}
 			break
