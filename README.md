@@ -95,6 +95,15 @@ The relay URL defaults to `wss://api.shellrelay.com` (compiled into the binary).
 3. The runner spawns a PTY (pseudo-terminal) and streams I/O over the WebSocket.
 4. Sessions are recorded locally as [asciicast](https://docs.asciinema.org/manual/asciicast/v2/) files.
 
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [Report a Bug](https://github.com/ShellRelay/runner/issues/new?template=bug_report.md)
+- [Request a Feature](https://github.com/ShellRelay/runner/issues/new?template=feature_request.md)
+
 ## License
 
 [MIT](LICENSE)
