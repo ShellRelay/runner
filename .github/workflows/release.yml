@@ -1,0 +1,105 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'VERSION'
+      - 'Dockerfile'
+      - 'entrypoint.sh'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      # ── Run tests ─────────────────────────────────────────────────────────
+      - name: Test
+        run: go test ./...
+
+      # ── Bump patch version ────────────────────────────────────────────────
+      - name: Bump patch version
+        id: version
+        run: |
+          CURRENT=$(cat VERSION | tr -d '[:space:]')
+          MAJOR=$(echo $CURRENT | cut -d. -f1)
+          MINOR=$(echo $CURRENT | cut -d. -f2)
+          PATCH=$(echo $CURRENT | cut -d. -f3)
+          NEW="$MAJOR.$MINOR.$((PATCH + 1))"
+          echo "$NEW" > VERSION
+          echo "VERSION=$NEW" >> "$GITHUB_OUTPUT"
+          echo "TAG=v$NEW" >> "$GITHUB_OUTPUT"
+          echo "Bumped $CURRENT → $NEW"
+
+      # ── Commit bumped version back to main ────────────────────────────────
+      - name: Commit version bump
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add VERSION
+          git commit -m "chore: bump version to ${{ steps.version.outputs.VERSION }} [skip ci]"
+          git push
+
+      # ── Tag the new version ───────────────────────────────────────────────
+      - name: Tag release
+        run: |
+          git tag ${{ steps.version.outputs.TAG }}
+          git push origin ${{ steps.version.outputs.TAG }}
+
+      # ── Build 4 platform binaries ─────────────────────────────────────────
+      - name: Build binaries
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+          mkdir -p dist
+          for pair in darwin/arm64 darwin/amd64 linux/amd64 linux/arm64; do
+            GOOS=${pair%/*}
+            GOARCH=${pair#*/}
+            OUT=dist/shellrelay-${GOOS}-${GOARCH}
+            echo "Building $OUT ..."
+            CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH \
+              go build -ldflags "-s -w -X main.Version=$VERSION" \
+              -o "$OUT" ./cmd/shellrelay
+          done
+          ls -lh dist/
+
+      # ── Generate checksums ────────────────────────────────────────────────
+      - name: Generate checksums
+        working-directory: dist
+        run: |
+          sha256sum shellrelay-* > checksums.txt
+          echo "Generated checksums:"
+          cat checksums.txt
+
+      # ── Publish GitHub Release ────────────────────────────────────────────
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.TAG }}" \
+            --title "ShellRelay Runner ${{ steps.version.outputs.TAG }}" \
+            --generate-notes \
+            dist/shellrelay-darwin-arm64 \
+            dist/shellrelay-darwin-amd64 \
+            dist/shellrelay-linux-amd64 \
+            dist/shellrelay-linux-arm64 \
+            dist/checksums.txt

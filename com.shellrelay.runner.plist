@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.shellrelay.runner</string>
+
+    <!-- Run `shellrelay run` (foreground loop — launchd manages restarts) -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/shellrelay</string>
+        <string>run</string>
+    </array>
+
+    <!-- Start at login and keep alive on exit -->
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Log stdout + stderr to ~/.shellrelay/shellrelay.log -->
+    <key>StandardOutPath</key>
+    <string>$HOME/.shellrelay/shellrelay.log</string>
+    <key>StandardErrorPath</key>
+    <string>$HOME/.shellrelay/shellrelay.log</string>
+
+    <!-- Throttle rapid restarts: wait 10s before relaunching -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+</dict>
+</plist>

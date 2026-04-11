@@ -1,0 +1,15 @@
+[Unit]
+Description=ShellRelay Runner
+Documentation=https://github.com/ShellRelay/runner
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# `shellrelay run` is the foreground relay loop; systemd manages restarts.
+# Server ID and token are read from ~/.shellrelay/config.
+ExecStart=/usr/local/bin/shellrelay run
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
