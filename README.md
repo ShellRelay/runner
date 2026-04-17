@@ -54,6 +54,7 @@ shellrelay logs      Tail daemon logs (-f to follow, -n <lines>)
 shellrelay run       Run in foreground (no daemon)
 shellrelay announce  Self-register with the relay (Docker / headless use)
 shellrelay rotate    Rotate the server token and restart
+shellrelay relay     Set a custom relay server URL and restart
 shellrelay sessions  List saved session recordings (asciicast)
 shellrelay upgrade   Download and install the latest release
 shellrelay daemon    Register/remove login service (launchd/systemd)
@@ -82,11 +83,15 @@ Config is stored at `~/.shellrelay/config`:
 ```
 SHELLRELAY_SERVER_ID=my-macbook
 SHELLRELAY_TOKEN=sr_xxxxxxxxxxxxxxxxxxxx
+# SHELLRELAY_URL=wss://your-custom-relay.com   (optional, set via: shellrelay relay --url <url>)
 ```
 
 The relay URL defaults to `wss://prod-api.shellrelay.com` (compiled into the binary). Override with:
-- `--relay wss://your-server.com` flag
+- `shellrelay relay --url wss://your-server.com` — persists to `~/.shellrelay/config`, restarts daemon automatically
+- `--relay wss://your-server.com` flag on `start` or `run`
 - `SHELLRELAY_URL=wss://your-server.com` environment variable
+
+Priority: `--relay` flag > `SHELLRELAY_URL` env > `~/.shellrelay/config` > compiled-in default
 
 ## How It Works
 
