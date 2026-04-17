@@ -34,7 +34,7 @@ USER shellrelay
 WORKDIR /home/shellrelay
 
 # Config via env vars (set in docker-compose or docker run)
-ENV SHELLRELAY_URL=wss://api.shellrelay.com
+ENV SHELLRELAY_URL=wss://prod-api.shellrelay.com
 ENV SHELLRELAY_SERVER_ID=""
 ENV SHELLRELAY_TOKEN=""
 ENV SHELLRELAY_EMAIL=""

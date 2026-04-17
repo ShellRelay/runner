@@ -84,7 +84,7 @@ SHELLRELAY_SERVER_ID=my-macbook
 SHELLRELAY_TOKEN=sr_xxxxxxxxxxxxxxxxxxxx
 ```
 
-The relay URL defaults to `wss://api.shellrelay.com` (compiled into the binary). Override with:
+The relay URL defaults to `wss://prod-api.shellrelay.com` (compiled into the binary). Override with:
 - `--relay wss://your-server.com` flag
 - `SHELLRELAY_URL=wss://your-server.com` environment variable
 
