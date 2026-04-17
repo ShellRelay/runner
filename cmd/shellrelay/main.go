@@ -37,6 +37,8 @@ func main() {
 		cmdAnnounce(os.Args[2:])
 	case "rotate":
 		cmdRotate(os.Args[2:])
+	case "relay":
+		cmdRelay(os.Args[2:])
 	case "version", "--version", "-v":
 		fmt.Printf("shellrelay v%s\n", Version)
 	case "help", "--help", "-h":
@@ -71,6 +73,7 @@ Docker / self-registration:
 Advanced:
   run       Run in the foreground (no daemon)
   rotate    Rotate the server token and restart the daemon
+  relay     Set a custom relay server URL and restart the daemon
 
 Other:
   version   Print version and exit

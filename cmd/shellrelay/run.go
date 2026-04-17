@@ -44,9 +44,8 @@ func cmdRun(args []string) {
 		fileVals = config.Values{}
 	}
 
-	// Resolve relay URL: flag > env > compiled-in default (NOT from config file,
-	// so upgrading the binary always picks up the correct URL).
-	relayURL := config.Get(*flagRelay, "SHELLRELAY_URL", nil, "", DefaultRelayURL)
+	// Resolve relay URL: flag > env > config file > compiled-in default.
+	relayURL := config.Get(*flagRelay, "SHELLRELAY_URL", fileVals, "SHELLRELAY_URL", DefaultRelayURL)
 	serverID := config.Get(positionalID, "", nil, "", config.Get(*flagID, "SHELLRELAY_SERVER_ID", fileVals, "SHELLRELAY_SERVER_ID", ""))
 	token := config.Get(positionalToken, "", nil, "", config.Get(*flagToken, "SHELLRELAY_TOKEN", fileVals, "SHELLRELAY_TOKEN", ""))
 	shell := config.Get(*flagShell, "SHELLRELAY_SHELL", fileVals, "SHELLRELAY_SHELL", "")
@@ -73,8 +72,7 @@ func cmdRun(args []string) {
 }
 
 // saveToConfig persists server ID and token to ~/.shellrelay/config.
-// The relay URL is intentionally NOT saved — it comes from the compiled-in
-// default so that upgrading the binary automatically picks up URL changes.
+// The relay URL is NOT saved here — use `shellrelay relay --url <url>` to persist it.
 // Silent on error — a warning is printed but execution continues.
 func saveToConfig(serverID, token string) {
 	updates := config.Values{
