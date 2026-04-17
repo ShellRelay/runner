@@ -133,6 +133,12 @@ func cmdStart(args []string) {
 
 	pid, err := readPID()
 	if err == nil && isRunning(pid) {
+		// If new credentials were supplied, restart so the daemon picks them up.
+		if len(positional) >= 1 {
+			fmt.Printf("shellrelay is running (pid %d) — restarting with new config...\n", pid)
+			cmdRestart([]string{"--no-daemon"})
+			return
+		}
 		fmt.Fprintf(os.Stderr, "shellrelay is already running (pid %d)\n", pid)
 		os.Exit(1)
 	}
