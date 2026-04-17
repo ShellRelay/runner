@@ -14,10 +14,10 @@ func cmdRelay(args []string) {
 	fs := flag.NewFlagSet("relay", flag.ExitOnError)
 	fs.Usage = func() {
 		log.SetFlags(0)
-		log.Printf("Usage: shellrelay relay --url <wss://...>\n\nPersist a custom relay server URL to ~/.shellrelay/config and restart the daemon.\n\nOptions:")
+		log.Printf("Usage: shellrelay relay --url <hostname or wss://...>\n\nPersist a custom relay server URL to ~/.shellrelay/config and restart the daemon.\nIf no scheme is provided, wss:// is assumed.\n\nOptions:")
 		fs.PrintDefaults()
 	}
-	flagURL := fs.String("url", "", "Relay server WebSocket URL (wss://... or ws://...)")
+	flagURL := fs.String("url", "", "Relay server hostname or WebSocket URL (e.g. prod-api.shellrelay.com or wss://prod-api.shellrelay.com)")
 	fs.Parse(args)
 
 	url := *flagURL
@@ -27,9 +27,10 @@ func cmdRelay(args []string) {
 		os.Exit(1)
 	}
 
+	// If no scheme is provided, default to wss://
 	if !strings.HasPrefix(url, "wss://") && !strings.HasPrefix(url, "ws://") {
-		fmt.Fprintln(os.Stderr, "Error: URL must start with wss:// or ws://")
-		os.Exit(1)
+		url = "wss://" + url
+		fmt.Printf("no scheme provided, defaulting to wss:// → %s\n", url)
 	}
 
 	if err := config.Save(config.Values{"SHELLRELAY_URL": url}); err != nil {
