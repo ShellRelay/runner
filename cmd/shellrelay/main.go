@@ -10,8 +10,8 @@ var Version = "dev"
 
 func main() {
 	if len(os.Args) < 2 {
-		printUsage()
-		os.Exit(1)
+		cmdMenu(nil)
+		return
 	}
 
 	switch os.Args[1] {
@@ -39,6 +39,8 @@ func main() {
 		cmdRotate(os.Args[2:])
 	case "relay":
 		cmdRelay(os.Args[2:])
+	case "menu":
+		cmdMenu(os.Args[2:])
 	case "version", "--version", "-v":
 		fmt.Printf("shellrelay v%s\n", Version)
 	case "help", "--help", "-h":
@@ -76,6 +78,7 @@ Advanced:
   relay     Set a custom relay server URL and restart the daemon
 
 Other:
+  menu      Interactive menu (default when no command given)
   version   Print version and exit
   help      Show this help message
 

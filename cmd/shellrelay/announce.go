@@ -83,13 +83,16 @@ func cmdAnnounce(args []string) {
 	existingToken := config.Get("", "SHELLRELAY_TOKEN", fileVals, "SHELLRELAY_TOKEN", "")
 	existingID := config.Get("", "SHELLRELAY_SERVER_ID", fileVals, "SHELLRELAY_SERVER_ID", "")
 	if existingToken != "" && existingID == serverID {
-		fmt.Println("┌─────────────────────────────────────────────────────┐")
-		fmt.Println("│  Already announced — using saved token              │")
-		fmt.Printf("│  Server ID:  %-40s│\n", serverID)
-		fmt.Printf("│  Owner:      %-40s│\n", email)
-		fmt.Println("│                                                     │")
-		fmt.Println("│  To re-announce, delete ~/.shellrelay/config        │")
-		fmt.Println("└─────────────────────────────────────────────────────┘")
+		fmt.Println("  Already announced — using saved token")
+		fmt.Println()
+		fmt.Printf("  Server ID : %s\n", serverID)
+		fmt.Printf("  Owner     : %s\n", email)
+		fmt.Printf("  Token     : %s\n", existingToken)
+		fmt.Println()
+		fmt.Println("  Log in to https://www.shellrelay.com and")
+		fmt.Println("  claim this server with the token above.")
+		fmt.Println()
+		fmt.Println("  To re-announce, delete ~/.shellrelay/config")
 		return
 	}
 
@@ -148,18 +151,16 @@ func cmdAnnounce(args []string) {
 
 	// Print the token prominently
 	fmt.Println()
-	fmt.Println("┌─────────────────────────────────────────────────────┐")
-	fmt.Println("│  ShellRelay server announced!                       │")
-	fmt.Println("│                                                     │")
-	fmt.Printf("│  Server ID:  %-40s│\n", actualID)
+	fmt.Println("  ✓ ShellRelay server announced!")
+	fmt.Println()
+	fmt.Printf("  Server ID : %s\n", actualID)
 	if actualID != serverID {
-		fmt.Printf("│  (requested: %-39s│\n", serverID+")")
+		fmt.Printf("  (requested: %s)\n", serverID)
 	}
-	fmt.Printf("│  Owner:      %-40s│\n", email)
-	fmt.Printf("│  Token:      %-40s│\n", token)
-	fmt.Println("│                                                     │")
-	fmt.Println("│  Log in to https://www.shellrelay.com and           │")
-	fmt.Println("│  claim this server with the token above.            │")
-	fmt.Println("└─────────────────────────────────────────────────────┘")
+	fmt.Printf("  Owner     : %s\n", email)
+	fmt.Printf("  Token     : %s\n", token)
+	fmt.Println()
+	fmt.Println("  Log in to https://www.shellrelay.com and")
+	fmt.Println("  claim this server with the token above.")
 	fmt.Println()
 }
