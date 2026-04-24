@@ -58,7 +58,7 @@ That's it. The daemon is already running and ready to accept connections.
 
 ### Option B — Register from the UI, then run
 
-1. Log in to [shellrelay.com](https://www.shellrelay.com) and create a new server from the dashboard.
+1. Log in to [shellrelay.com](https://www.shellrelay.com) and register a new server from the dashboard.
 2. Copy the connect command shown — it looks like:
 
 ```bash
