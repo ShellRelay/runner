@@ -2,6 +2,10 @@
 
 Lightweight Go binary that connects any machine to [ShellRelay](https://www.shellrelay.com) for browser-based terminal access. No VPN, no SSH keys, no port forwarding.
 
+## 30-Second Demo
+
+![ShellRelay demo](demo.svg)
+
 ## Install
 
 ```bash
