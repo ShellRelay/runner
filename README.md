@@ -2,28 +2,28 @@
 
 Lightweight Go binary that connects any machine to [ShellRelay](https://www.shellrelay.com) for browser-based terminal access. No VPN, no SSH keys, no port forwarding.
 
-## The Problem
+## Why ShellRelay?
 
-Getting terminal access to a remote machine is harder than it should be.
+AI has made the command line the most powerful interface in software development.
 
-The traditional approach — SSH — requires open ports, firewall rules, and distributed key management. On machines behind NAT, corporate firewalls, or cloud security groups that restrict inbound traffic, SSH often isn't an option at all. For Docker containers, you need access to the host first. For team environments, sharing SSH credentials is a security risk.
+Tools like [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex CLI](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-deepmind/gemini-cli), and [OpenCode](https://opencode.ai) have shifted serious development work from IDEs back to the terminal. These agents don't just assist — they write, test, refactor, and deploy entire features through a shell session. The CLI is no longer a niche tool; it is the primary interface for AI-driven development.
 
-The result: engineers spend time fighting infrastructure just to reach a machine.
+The problem: **that power is locked to wherever you are sitting.**
 
-## The Solution
+Your Mac has the context — the repos, the running containers, the configured AI tools. Your VPS has the compute. But the moment you step away from your desk — open your phone, switch to a tablet, work from a different machine — you lose the thread. You can't reach your running AI session. You can't pick up where you left off. Nothing in the market solves this cleanly for the way developers actually work today: multiple machines, Docker containers, AI tools configured just-so, and the need to access all of it from anywhere.
 
-ShellRelay flips the connection model. Instead of you connecting *in* to the machine, the machine connects *out* to the relay. Your browser then connects to the relay — and the relay bridges the two.
+That gap is why ShellRelay exists. It was built out of a personal need to use every AI CLI tool — on a local Mac and on VPS Docker containers — from any device, at any time, without VPN setup, without SSH key management, and without losing session state.
+
+**The architecture is intentionally simple.** Instead of you connecting *in* to the machine, the machine connects *out* to the relay. Your browser or mobile device connects to the relay — and the relay bridges the two.
 
 - No inbound ports required
 - No SSH keys to generate or distribute
 - No VPN to configure
 - Works through any firewall, NAT, or cloud security group
-- Access any machine, Docker container, or Kubernetes Pod from any browser, anywhere
-- iPad and iPhone support coming soon
+- Mac, VPS, Docker container, Kubernetes Pod — all reachable from any browser or mobile device
+- One binary. Register once. Available everywhere.
 
-The runner is a single static binary. Install it, register the server once, and it is accessible from [shellrelay.com](https://www.shellrelay.com) immediately.
-
-**Security:** ShellRelay acts as a relay only. Terminal data is encrypted in transit (TLS) and never stored on ShellRelay servers. Session recordings are saved exclusively on your local machine. Each server authenticates with a unique token (`sr_*`) that you control and can rotate at any time.
+**Security:** ShellRelay is a relay only — it never stores terminal data. All traffic is encrypted in transit (TLS). Session recordings are saved exclusively on your local machine. Each server authenticates with a unique token (`sr_*`) that you generate and can rotate at any time.
 
 ## 30-Second Demo
 
@@ -51,7 +51,7 @@ shellrelay
 
 An interactive menu launches. Use arrow keys or number keys to navigate.
 
-### Option B — Command line (runner-first)
+### Option B — Command line
 
 1. Register your server — generates a claim token, saves credentials, and starts the daemon:
 
@@ -63,7 +63,7 @@ shellrelay announce --email you@gmail.com <server-id>
 
 That's it. The daemon is already running and ready to accept connections.
 
-### Option C — UI-first (register in dashboard, then run)
+### Option C — Register from the UI, then run
 
 1. Log in to [shellrelay.com](https://www.shellrelay.com) and create a new server from the dashboard.
 2. Copy the connect command shown — it looks like:
