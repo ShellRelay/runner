@@ -18,7 +18,8 @@ ShellRelay flips the connection model. Instead of you connecting *in* to the mac
 - No SSH keys to generate or distribute
 - No VPN to configure
 - Works through any firewall, NAT, or cloud security group
-- Access any machine from any browser, anywhere
+- Access any machine, Docker container, or Kubernetes Pod from any browser, anywhere
+- iPad and iPhone support coming soon
 
 The runner is a single static binary. Install it, register the server once, and it is accessible from [shellrelay.com](https://www.shellrelay.com) immediately.
 
