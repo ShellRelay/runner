@@ -94,8 +94,13 @@ func cmdAnnounce(args []string) {
 		fmt.Println()
 		fmt.Println("  To re-announce, delete ~/.shellrelay/config")
 		fmt.Println()
-		fmt.Println("  Starting daemon...")
-		cmdStart(nil)
+		pid, _ := readPID()
+		if isRunning(pid) {
+			fmt.Println("  Daemon already running — no restart needed.")
+		} else {
+			fmt.Println("  Starting daemon...")
+			cmdStart(nil)
+		}
 		return
 	}
 
@@ -168,6 +173,12 @@ func cmdAnnounce(args []string) {
 	fmt.Println()
 
 	// Auto-start the daemon so it's ready the moment the user claims the server.
-	fmt.Println("  Starting daemon...")
-	cmdStart(nil)
+	// Skip if already running to avoid a spurious "already running" error.
+	pid, _ := readPID()
+	if isRunning(pid) {
+		fmt.Println("  Daemon already running — no restart needed.")
+	} else {
+		fmt.Println("  Starting daemon...")
+		cmdStart(nil)
+	}
 }
