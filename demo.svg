@@ -1,139 +1,245 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="660" height="440" viewBox="0 0 660 440">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480">
 <defs>
 <style>
-  .t { font-family: 'Courier New', 'Lucida Console', Monaco, monospace; font-size: 13px; }
+  .ui  { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+  .mono{ font-family: 'SF Mono', 'Fira Code', Consolas, 'Courier New', monospace; }
+
+  /* 40-second loop
+     s1 login:      0–10s   (0–25%)
+     s2 dashboard: 10–24s  (25–60%)
+     s3 terminal:  24–40s  (60–100%)
+  */
+  .s1 { opacity:0; animation: fs1 40s linear infinite; }
+  .s2 { opacity:0; animation: fs2 40s linear infinite; }
+  .s3 { opacity:0; animation: fs3 40s linear infinite; }
+
+  @keyframes fs1 {
+    0%    { opacity:0 } 2%    { opacity:1 }
+    23%   { opacity:1 } 25%   { opacity:0 }
+    100%  { opacity:0 }
+  }
+  @keyframes fs2 {
+    0%,25% { opacity:0 } 27%  { opacity:1 }
+    58%    { opacity:1 } 60%  { opacity:0 }
+    100%   { opacity:0 }
+  }
+  @keyframes fs3 {
+    0%,60% { opacity:0 } 62%  { opacity:1 }
+    98%    { opacity:1 } 100% { opacity:0 }
+  }
+
+  /* Google button hover at ~8s (20%) */
+  .ghover { opacity:0; animation: fgh 40s linear infinite; }
+  @keyframes fgh {
+    0%,17% { opacity:0 } 19%  { opacity:1 }
+    23%    { opacity:1 } 25%  { opacity:0 }
+    100%   { opacity:0 }
+  }
+
+  /* Connect button pulse at ~22s (55%) */
+  .cpulse { opacity:0; animation: fcp 40s linear infinite; }
+  @keyframes fcp {
+    0%,50% { opacity:0 } 52%  { opacity:1 }
+    58%    { opacity:1 } 60%  { opacity:0 }
+    100%   { opacity:0 }
+  }
+
+  /* Terminal sub-phases within scene 3 (60–100% = 24–40s)
+     3a connecting: 60–70%  (24–28s)
+     3b connected:  70–80%  (28–32s)
+     3c output:     80–100% (32–40s)
+  */
+  .t3a { opacity:0; animation: ft3a 40s linear infinite; }
+  .t3b { opacity:0; animation: ft3b 40s linear infinite; }
+  .t3c { opacity:0; animation: ft3c 40s linear infinite; }
+  @keyframes ft3a {
+    0%,60%  { opacity:0 } 62% { opacity:1 }
+    68%     { opacity:1 } 70% { opacity:0 }
+    100%    { opacity:0 }
+  }
+  @keyframes ft3b {
+    0%,70%  { opacity:0 } 72% { opacity:1 }
+    78%     { opacity:1 } 80% { opacity:0 }
+    100%    { opacity:0 }
+  }
+  @keyframes ft3c {
+    0%,80%  { opacity:0 } 82% { opacity:1 }
+    98%     { opacity:1 } 100%{ opacity:0 }
+  }
+
   @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
   .cur { animation: blink 0.9s step-end infinite; }
-
-  /* 28-second loop
-     s1 (prompt):  0–4s     0%–14%
-     s2 (menu):    4–14s   14%–50%
-     s3 (form):   14–20s   50%–71%
-     s4 (result): 20–28s   71%–100%
-  */
-  .s1 { opacity:0; animation: fa1 28s linear infinite; }
-  .s2 { opacity:0; animation: fa2 28s linear infinite; }
-  .s3 { opacity:0; animation: fa3 28s linear infinite; }
-  .s4 { opacity:0; animation: fa4 28s linear infinite; }
-
-  @keyframes fa1 {
-    0%   { opacity:0 }
-    2%   { opacity:1 }
-    12%  { opacity:1 }
-    15%  { opacity:0 }
-    100% { opacity:0 }
-  }
-  @keyframes fa2 {
-    0%,15% { opacity:0 }
-    17%    { opacity:1 }
-    48%    { opacity:1 }
-    51%    { opacity:0 }
-    100%   { opacity:0 }
-  }
-  @keyframes fa3 {
-    0%,51% { opacity:0 }
-    53%    { opacity:1 }
-    69%    { opacity:1 }
-    72%    { opacity:0 }
-    100%   { opacity:0 }
-  }
-  @keyframes fa4 {
-    0%,72% { opacity:0 }
-    74%    { opacity:1 }
-    97%    { opacity:1 }
-    100%   { opacity:0 }
-  }
 </style>
 </defs>
 
-<!-- Terminal window -->
-<rect width="660" height="440" rx="10" fill="#0d1117"/>
+<!-- BROWSER CHROME (always visible) -->
+<rect width="720" height="480" rx="10" fill="#18181b"/>
+<rect width="720" height="36" rx="10" fill="#27272a"/>
+<rect y="27" width="720" height="9" fill="#27272a"/>
+<circle cx="20" cy="18" r="6" fill="#ff5f57"/>
+<circle cx="40" cy="18" r="6" fill="#febc2e"/>
+<circle cx="60" cy="18" r="6" fill="#28c840"/>
+<rect x="190" y="7" width="340" height="22" rx="4" fill="#09090b"/>
 
-<!-- Chrome bar -->
-<rect width="660" height="36" rx="10" fill="#161b22"/>
-<rect y="27" width="660" height="9" fill="#161b22"/>
+<!-- URL text per scene -->
+<text class="s1 ui" x="360" y="22" text-anchor="middle" font-size="11" fill="#52525b">shellrelay.com/login</text>
+<text class="s2 ui" x="360" y="22" text-anchor="middle" font-size="11" fill="#52525b">shellrelay.com</text>
+<text class="s3 ui" x="360" y="22" text-anchor="middle" font-size="11" fill="#52525b">shellrelay.com/terminal/my-macbook</text>
 
-<!-- Traffic lights -->
-<circle cx="18" cy="18" r="6" fill="#ff5f57"/>
-<circle cx="38" cy="18" r="6" fill="#febc2e"/>
-<circle cx="58" cy="18" r="6" fill="#28c840"/>
-<text x="330" y="23" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="#484f58">shellrelay</text>
+<!-- Content area base -->
+<rect x="0" y="36" width="720" height="444" fill="#09090b"/>
 
-<!-- ═══════════════ SCENE 1: Prompt ═══════════════ -->
+<!-- SCENE 1: LOGIN PAGE -->
 <g class="s1">
-  <text class="t" x="20" y="72" fill="#3fb950">~</text>
-  <text class="t" x="33" y="72" fill="#6e7681">$</text>
-  <text class="t" x="48" y="72" fill="#e6edf3">shellrelay</text>
-  <rect class="cur" x="127" y="58" width="8" height="16" fill="#e6edf3"/>
-  <text class="t" x="20" y="98" fill="#484f58"># Launching interactive menu...</text>
+  <rect x="0" y="36" width="720" height="444" fill="#09090b"/>
+  <rect x="330" y="92" width="60" height="60" rx="14" fill="#27272a"/>
+  <text class="mono" x="360" y="132" text-anchor="middle" font-size="22" fill="#a1a1aa">&gt;_</text>
+  <text class="ui" x="360" y="192" text-anchor="middle" font-size="28" font-weight="700" fill="#f4f4f5">ShellRelay</text>
+  <text class="ui" x="360" y="214" text-anchor="middle" font-size="13" fill="#71717a">Secure PTY-over-WebSocket terminal relay</text>
+  <rect x="244" y="232" width="232" height="116" rx="10" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+  <rect x="260" y="246" width="200" height="38" rx="6" fill="#f4f4f5"/>
+  <circle cx="278" cy="265" r="5" fill="#4285f4"/>
+  <text class="ui" x="296" y="270" font-size="12" font-weight="500" fill="#1c1c1c">Continue with Google</text>
+  <rect x="260" y="292" width="200" height="38" rx="6" fill="#27272a" stroke="#3f3f46" stroke-width="1"/>
+  <text class="ui" x="360" y="315" text-anchor="middle" font-size="12" font-weight="500" fill="#f4f4f5">Continue with GitHub</text>
+  <g class="ghover">
+    <rect x="260" y="246" width="200" height="38" rx="6" fill="#e4e4e7"/>
+    <circle cx="278" cy="265" r="5" fill="#4285f4"/>
+    <text class="ui" x="296" y="270" font-size="12" font-weight="500" fill="#1c1c1c">Continue with Google</text>
+  </g>
+  <rect x="148" y="374" width="132" height="22" rx="11" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+  <text class="ui" x="214" y="389" text-anchor="middle" font-size="10" fill="#71717a">Full PTY emulation</text>
+  <rect x="292" y="374" width="120" height="22" rx="11" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+  <text class="ui" x="352" y="389" text-anchor="middle" font-size="10" fill="#71717a">Session transcripts</text>
+  <rect x="424" y="374" width="112" height="22" rx="11" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+  <text class="ui" x="480" y="389" text-anchor="middle" font-size="10" fill="#71717a">Native iOS app</text>
+  <text class="ui" x="360" y="430" text-anchor="middle" font-size="11" fill="#3f3f46">Open source · MIT · github.com/ShellRelay/runner</text>
 </g>
 
-<!-- ═══════════════ SCENE 2: Full Menu ═══════════════ -->
+<!-- SCENE 2: DASHBOARD -->
 <g class="s2">
-  <text class="t" x="20" y="56" fill="#484f58">╔══════════════════════════════════════════════════╗</text>
-  <text class="t" x="20" y="73" fill="#c9d1d9">│<tspan fill="#e6edf3" font-weight="bold">                    ShellRelay                    </tspan>│</text>
-  <text class="t" x="20" y="90" fill="#484f58">╠══════════════════════════════════════════════════╣</text>
-
-  <rect x="21" y="93" width="404" height="17" fill="#1f6feb" rx="1"/>
-  <text class="t" x="20" y="106" fill="#484f58">│</text>
-  <text class="t" x="28" y="106" fill="#ffffff" font-weight="bold">  ▶   1. Register server with Gmail account      </text>
-  <text class="t" x="424" y="106" fill="#484f58">│</text>
-
-  <text class="t" fill="#c9d1d9">
-    <tspan x="20" y="123">│       2. Start daemon                            │</tspan>
-    <tspan x="20" dy="17">│       3. Stop daemon                             │</tspan>
-    <tspan x="20" dy="17">│       4. Restart daemon                          │</tspan>
-    <tspan x="20" dy="17">│       5. Status                                  │</tspan>
-    <tspan x="20" dy="17">│       6. Logs                                    │</tspan>
-    <tspan x="20" dy="17">│       7. Sessions                                │</tspan>
-    <tspan x="20" dy="17">│       8. Rotate token                            │</tspan>
-    <tspan x="20" dy="17">│       9. Set relay URL                           │</tspan>
-    <tspan x="20" dy="17">│      10. Upgrade to latest release               │</tspan>
-    <tspan x="20" dy="17">│      11. Daemon install                          │</tspan>
-    <tspan x="20" dy="17">│      12. Daemon uninstall                        │</tspan>
-    <tspan x="20" dy="17">│      13. Version                                 │</tspan>
-  </text>
-
-  <text class="t" x="20" y="330" fill="#484f58">╠══════════════════════════════════════════════════╣</text>
-  <text class="t" x="20" y="347" fill="#c9d1d9">│       0. Exit                                    │</text>
-  <text class="t" x="20" y="364" fill="#484f58">╚══════════════════════════════════════════════════╝</text>
-  <text class="t" x="20" y="390" fill="#484f58">  ↑↓ to move   Enter to select   q to quit</text>
+  <rect x="0" y="36" width="720" height="444" fill="#09090b"/>
+  <rect x="0" y="36" width="720" height="52" fill="#18181b"/>
+  <rect x="0" y="87" width="720" height="1" fill="#27272a"/>
+  <rect x="20" y="50" width="26" height="26" rx="7" fill="#27272a"/>
+  <text class="mono" x="33" y="68" text-anchor="middle" font-size="12" fill="#a1a1aa">&gt;_</text>
+  <text class="ui" x="54" y="68" font-size="14" font-weight="600" fill="#f4f4f5">ShellRelay</text>
+  <circle cx="580" cy="63" r="14" fill="#3f3f46"/>
+  <text class="ui" x="580" y="68" text-anchor="middle" font-size="11" font-weight="700" fill="#d4d4d8">A</text>
+  <text class="ui" x="600" y="68" font-size="12" fill="#52525b">alice@example.com</text>
+  <text class="ui" x="40" y="122" font-size="20" font-weight="700" fill="#f4f4f5">Servers</text>
+  <text class="ui" x="40" y="142" font-size="12" fill="#52525b">2 of 5 servers  ·  1 online</text>
+  <rect x="614" y="108" width="90" height="30" rx="6" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+  <text class="ui" x="659" y="127" text-anchor="middle" font-size="12" fill="#d4d4d8">+ Add server</text>
+  <!-- Server row 1: my-macbook (online) -->
+  <rect x="20" y="160" width="680" height="70" rx="8" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+  <rect x="20" y="160" width="4" height="70" rx="2" fill="#22c55e"/>
+  <rect x="36" y="176" width="38" height="38" rx="9" fill="#052e16"/>
+  <circle cx="55" cy="195" r="9" fill="none" stroke="#22c55e" stroke-width="1.5"/>
+  <circle cx="55" cy="195" r="4" fill="#22c55e"/>
+  <text class="ui" x="88" y="191" font-size="14" font-weight="600" fill="#f4f4f5">my-macbook</text>
+  <text class="mono" x="88" y="208" font-size="11" fill="#52525b">my-macbook</text>
+  <rect x="88" y="214" width="58" height="18" rx="9" fill="#052e16"/>
+  <circle cx="101" cy="223" r="4" fill="#22c55e"/>
+  <text class="ui" x="110" y="227" font-size="10" fill="#22c55e">online</text>
+  <rect x="520" y="177" width="80" height="32" rx="6" fill="#2563eb"/>
+  <text class="ui" x="560" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Connect</text>
+  <g class="cpulse">
+    <rect x="520" y="177" width="80" height="32" rx="6" fill="#1d4ed8"/>
+    <text class="ui" x="560" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Connect</text>
+  </g>
+  <rect x="608" y="177" width="32" height="32" rx="6" fill="#27272a"/>
+  <text class="ui" x="624" y="197" text-anchor="middle" font-size="14" fill="#71717a">&#8942;</text>
+  <!-- Server row 2: my-server (offline) -->
+  <rect x="20" y="244" width="680" height="70" rx="8" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+  <rect x="20" y="244" width="4" height="70" rx="2" fill="#3f3f46"/>
+  <rect x="36" y="260" width="38" height="38" rx="9" fill="#1c1c1e"/>
+  <circle cx="55" cy="279" r="9" fill="none" stroke="#3f3f46" stroke-width="1.5"/>
+  <circle cx="55" cy="279" r="4" fill="#3f3f46"/>
+  <text class="ui" x="88" y="275" font-size="14" font-weight="600" fill="#52525b">my-server</text>
+  <text class="mono" x="88" y="292" font-size="11" fill="#3f3f46">my-server</text>
+  <rect x="88" y="298" width="60" height="18" rx="9" fill="#1c1c1e"/>
+  <circle cx="101" cy="307" r="4" fill="#3f3f46"/>
+  <text class="ui" x="110" y="311" font-size="10" fill="#52525b">offline</text>
+  <rect x="648" y="260" width="32" height="32" rx="6" fill="#27272a"/>
+  <text class="ui" x="664" y="280" text-anchor="middle" font-size="14" fill="#52525b">&#8942;</text>
+  <!-- Shared with me section -->
+  <text class="ui" x="40" y="348" font-size="13" font-weight="600" fill="#52525b">Shared with me</text>
+  <rect x="20" y="360" width="680" height="64" rx="8" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+  <rect x="20" y="360" width="4" height="64" rx="2" fill="#22c55e"/>
+  <rect x="36" y="374" width="38" height="36" rx="9" fill="#052e16"/>
+  <circle cx="55" cy="392" r="9" fill="none" stroke="#22c55e" stroke-width="1.5"/>
+  <circle cx="55" cy="392" r="4" fill="#22c55e"/>
+  <text class="ui" x="88" y="388" font-size="14" font-weight="600" fill="#f4f4f5">prod-server</text>
+  <text class="ui" x="88" y="406" font-size="11" fill="#52525b">by bob@example.com</text>
+  <rect x="520" y="374" width="80" height="30" rx="6" fill="#2563eb"/>
+  <text class="ui" x="560" y="393" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Connect</text>
 </g>
 
-<!-- ═══════════════ SCENE 3: Register Form ═══════════════ -->
+<!-- SCENE 3: TERMINAL PAGE -->
 <g class="s3">
-  <text class="t" x="20" y="66" fill="#e6edf3">→ Register server with Gmail account</text>
+  <rect x="0" y="36" width="720" height="444" fill="#09090b"/>
+  <!-- Toolbar -->
+  <rect x="0" y="36" width="720" height="44" fill="#18181b"/>
+  <rect x="0" y="79" width="720" height="1" fill="#27272a"/>
+  <text class="ui" x="20" y="63" font-size="12" fill="#71717a">&#8592; Servers</text>
+  <rect x="105" y="48" width="1" height="20" fill="#3f3f46"/>
+  <circle cx="121" cy="58" r="5" fill="#ff5f57" opacity="0.6"/>
+  <circle cx="137" cy="58" r="5" fill="#febc2e" opacity="0.6"/>
+  <circle cx="153" cy="58" r="5" fill="#28c840" opacity="0.6"/>
+  <text class="mono" x="360" y="64" text-anchor="middle" font-size="12" fill="#71717a">my-macbook</text>
+  <rect x="634" y="46" width="66" height="26" rx="5" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+  <text class="ui" x="667" y="63" text-anchor="middle" font-size="12" fill="#a1a1aa">Share</text>
 
-  <text class="t" x="20" y="100" fill="#6e7681">  Server ID:</text>
-  <text class="t" x="111" y="100" fill="#3fb950"> my-server</text>
+  <!-- Phase 3a: connecting -->
+  <g class="t3a">
+    <text class="mono" x="30" y="108" font-size="12" fill="#27272a">&#x250c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</text>
+    <text class="mono" x="30" y="124" font-size="12" fill="#3f3f46">&#x2502;  <tspan fill="#71717a">my-macbook</tspan></text>
+    <text class="mono" x="30" y="140" font-size="12" fill="#3f3f46">&#x2502;  <tspan fill="#52525b">Connecting to relay server...</tspan></text>
+    <text class="mono" x="30" y="156" font-size="12" fill="#27272a">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</text>
+    <text class="mono" x="30" y="188" font-size="12" fill="#eab308">&#x23F3; Waiting for runner...</text>
+  </g>
 
-  <text class="t" x="20" y="117" fill="#6e7681">  Gmail address:</text>
-  <text class="t" x="134" y="117" fill="#3fb950"> me@gmail.com</text>
+  <!-- Phase 3b: connected, ready -->
+  <g class="t3b">
+    <text class="mono" x="30" y="108" font-size="12" fill="#27272a">&#x250c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</text>
+    <text class="mono" x="30" y="124" font-size="12" fill="#3f3f46">&#x2502;  <tspan fill="#71717a">my-macbook</tspan></text>
+    <text class="mono" x="30" y="140" font-size="12" fill="#3f3f46">&#x2502;  <tspan fill="#52525b">Connecting to relay server...</tspan></text>
+    <text class="mono" x="30" y="156" font-size="12" fill="#27272a">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</text>
+    <text class="mono" x="30" y="188" font-size="12" fill="#22c55e">&#x2713; Runner online</text>
+    <text class="mono" x="30" y="220" font-size="12" fill="#22c55e">user@my-macbook</text>
+    <text class="mono" x="156" y="220" font-size="12" fill="#a1a1aa">:</text>
+    <text class="mono" x="163" y="220" font-size="12" fill="#3b82f6">~</text>
+    <text class="mono" x="177" y="220" font-size="12" fill="#f4f4f5">$</text>
+    <rect class="cur" x="190" y="207" width="8" height="15" fill="#f4f4f5"/>
+  </g>
 
-  <text class="t" x="20" y="134" fill="#6e7681">  Display name (optional):</text>
-  <rect class="cur" x="215" y="121" width="8" height="15" fill="#6e7681"/>
-
-  <text class="t" x="20" y="168" fill="#484f58">  Contacting relay...</text>
-</g>
-
-<!-- ═══════════════ SCENE 4: Result ═══════════════ -->
-<g class="s4">
-  <text class="t" x="20" y="66" fill="#3fb950">  ✓ ShellRelay server announced!</text>
-
-  <text class="t" x="20" y="100" fill="#6e7681">  Server ID :</text>
-  <text class="t" x="112" y="100" fill="#e6edf3"> my-server</text>
-
-  <text class="t" x="20" y="117" fill="#6e7681">  Owner     :</text>
-  <text class="t" x="112" y="117" fill="#e6edf3"> me@gmail.com</text>
-
-  <text class="t" x="20" y="134" fill="#6e7681">  Token     :</text>
-  <text class="t" x="20" y="151" fill="#e3b341" font-weight="bold">    sr_4a2f9e1c8b3d7f0e5a6b2c4d8e1f3a9b7c2d5e0f4a9b2c</text>
-
-  <text class="t" x="20" y="185" fill="#6e7681">  Log in to https://www.shellrelay.com and</text>
-  <text class="t" x="20" y="202" fill="#6e7681">  claim this server with the token above.</text>
-
-  <text class="t" x="20" y="236" fill="#484f58">  --- press Enter to continue ---</text>
-  <rect class="cur" x="20" y="246" width="8" height="14" fill="#484f58"/>
+  <!-- Phase 3c: command + output -->
+  <g class="t3c">
+    <text class="mono" x="30" y="108" font-size="12" fill="#27272a">&#x250c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</text>
+    <text class="mono" x="30" y="124" font-size="12" fill="#3f3f46">&#x2502;  <tspan fill="#71717a">my-macbook</tspan></text>
+    <text class="mono" x="30" y="140" font-size="12" fill="#3f3f46">&#x2502;  <tspan fill="#52525b">Connecting to relay server...</tspan></text>
+    <text class="mono" x="30" y="156" font-size="12" fill="#27272a">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</text>
+    <text class="mono" x="30" y="188" font-size="12" fill="#22c55e">&#x2713; Runner online</text>
+    <text class="mono" x="30" y="220" font-size="12" fill="#22c55e">user@my-macbook</text>
+    <text class="mono" x="156" y="220" font-size="12" fill="#a1a1aa">:</text>
+    <text class="mono" x="163" y="220" font-size="12" fill="#3b82f6">~</text>
+    <text class="mono" x="177" y="220" font-size="12" fill="#f4f4f5">$ uname -a</text>
+    <text class="mono" x="30" y="240" font-size="12" fill="#a1a1aa">Darwin my-macbook.local 24.0.0 Darwin Kernel Version 24.0.0</text>
+    <text class="mono" x="30" y="256" font-size="12" fill="#a1a1aa">RELEASE_ARM64_T8103 arm64</text>
+    <text class="mono" x="30" y="284" font-size="12" fill="#22c55e">user@my-macbook</text>
+    <text class="mono" x="156" y="284" font-size="12" fill="#a1a1aa">:</text>
+    <text class="mono" x="163" y="284" font-size="12" fill="#3b82f6">~</text>
+    <text class="mono" x="177" y="284" font-size="12" fill="#f4f4f5">$ docker ps</text>
+    <text class="mono" x="30" y="304" font-size="11" fill="#52525b">CONTAINER ID   IMAGE          COMMAND                STATUS        PORTS</text>
+    <text class="mono" x="30" y="320" font-size="11" fill="#a1a1aa">3f8b2c1a9d4e   nginx:latest   "/docker-entrypoint…"  Up 2 hours    0.0.0.0:80->80/tcp</text>
+    <text class="mono" x="30" y="336" font-size="11" fill="#a1a1aa">7c4e1b2a0f9d   redis:7        "docker-entrypoint.s…" Up 2 hours    0.0.0.0:6379->6379/tcp</text>
+    <text class="mono" x="30" y="364" font-size="12" fill="#22c55e">user@my-macbook</text>
+    <text class="mono" x="156" y="364" font-size="12" fill="#a1a1aa">:</text>
+    <text class="mono" x="163" y="364" font-size="12" fill="#3b82f6">~</text>
+    <text class="mono" x="177" y="364" font-size="12" fill="#f4f4f5">$</text>
+    <rect class="cur" x="190" y="351" width="8" height="15" fill="#f4f4f5"/>
+  </g>
 </g>
 
 </svg>
