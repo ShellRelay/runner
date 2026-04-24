@@ -16,6 +16,75 @@ func withHome(t *testing.T, dir string) {
 	t.Setenv("HOME", dir)
 }
 
+func TestClose_FlushError(t *testing.T) {
+	tmp := t.TempDir()
+	withHome(t, tmp)
+
+	w, err := New("test-flush-err", "srv")
+	if err != nil {
+		t.Fatalf("New() error: %v", err)
+	}
+	// Buffer some data then close the underlying file so Flush() fails.
+	if err := w.Write("buffered data"); err != nil {
+		t.Fatalf("Write() error: %v", err)
+	}
+	w.file.Close() // close underlying fd — Flush() will now fail
+
+	if err := w.Close(); err == nil {
+		t.Error("expected error from Close() when underlying file is closed, got nil")
+	}
+}
+
+// -------------------------------------------------------------------------
+// sessionsDir / New error paths (requires non-root execution)
+// -------------------------------------------------------------------------
+
+func TestSessionsDir_MkdirAllError(t *testing.T) {
+	if os.Getuid() == 0 {
+		t.Skip("running as root — chmod has no effect")
+	}
+	tmp := t.TempDir()
+	withHome(t, tmp)
+
+	// Create ~/.shellrelay but make it read-only so sessions/ sub-dir can't be created.
+	shellrelayDir := filepath.Join(tmp, ".shellrelay")
+	if err := os.MkdirAll(shellrelayDir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(shellrelayDir, 0500); err != nil {
+		t.Skip("cannot change dir permissions")
+	}
+	t.Cleanup(func() { os.Chmod(shellrelayDir, 0700) }) //nolint:errcheck
+
+	_, err := sessionsDir()
+	if err == nil {
+		t.Error("expected error when parent dir is read-only, got nil")
+	}
+}
+
+func TestNew_CreateFileError(t *testing.T) {
+	if os.Getuid() == 0 {
+		t.Skip("running as root — chmod has no effect")
+	}
+	tmp := t.TempDir()
+	withHome(t, tmp)
+
+	// Create sessions dir then make it read-only so os.Create fails.
+	sessDir := filepath.Join(tmp, ".shellrelay", "sessions")
+	if err := os.MkdirAll(sessDir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(sessDir, 0500); err != nil {
+		t.Skip("cannot change dir permissions")
+	}
+	t.Cleanup(func() { os.Chmod(sessDir, 0700) }) //nolint:errcheck
+
+	_, err := New("test-readonly", "srv")
+	if err == nil {
+		t.Error("expected error when sessions dir is read-only, got nil")
+	}
+}
+
 // -------------------------------------------------------------------------
 // jsonEscape
 // -------------------------------------------------------------------------
