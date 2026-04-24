@@ -28,7 +28,7 @@ shellrelay
 
 An interactive menu launches. Use arrow keys or number keys to navigate.
 
-### Option B — Command line
+### Option B — Command line (runner-first)
 
 1. Register your server — generates a claim token, saves credentials, and starts the daemon:
 
@@ -39,6 +39,17 @@ shellrelay announce --email you@gmail.com <server-id>
 2. Log in to [shellrelay.com](https://www.shellrelay.com) and claim the server using the token printed above.
 
 That's it. The daemon is already running and ready to accept connections.
+
+### Option C — UI-first (register in dashboard, then run)
+
+1. Log in to [shellrelay.com](https://www.shellrelay.com) and create a new server from the dashboard.
+2. Copy the connect command shown — it looks like:
+
+```bash
+shellrelay start <server-id> <token>
+```
+
+3. Run it on your machine. Credentials are saved and the daemon starts immediately.
 
 ## Interactive Menu
 
@@ -125,7 +136,7 @@ shellrelay announce --email you@gmail.com <server-id>
 shellrelay announce --email you@gmail.com --name "My Server" <server-id>
 ```
 
-Running announce again on the same server ID prints the saved token and restarts the daemon — useful if you need to reclaim.
+Running announce again on the same server ID prints the saved token — useful if you need to reclaim.
 
 ### relay
 
