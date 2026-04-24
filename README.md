@@ -4,11 +4,11 @@ Lightweight Go binary that connects any machine to [ShellRelay](https://www.shel
 
 ## Why ShellRelay?
 
-AI has made the command line the most powerful interface in software development.
+A new wave of AI coding tools runs entirely in the terminal.
 
-Tools like [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex CLI](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-deepmind/gemini-cli), and [OpenCode](https://opencode.ai) have shifted serious development work from IDEs back to the terminal. These agents don't just assist — they write, test, refactor, and deploy entire features through a shell session. The CLI is no longer a niche tool; it is the primary interface for AI-driven development.
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex CLI](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-deepmind/gemini-cli), and [OpenCode](https://opencode.ai) are agent-based tools that operate through shell sessions — reading files, running tests, committing code, and iterating autonomously. Unlike IDE plugins that assist one line at a time, these agents work end-to-end through the terminal. For developers building with them, the shell session *is* the development environment.
 
-The problem: **that power is locked to wherever you are sitting.**
+The problem: **that environment is tied to wherever you are sitting.**
 
 Your Mac has the context — the repos, the running containers, the configured AI tools. Your VPS has the compute. But the moment you step away from your desk — open your phone, switch to a tablet, work from a different machine — you lose the thread. You can't reach your running AI session. You can't pick up where you left off. Nothing in the market solves this cleanly for the way developers actually work today: multiple machines, Docker containers, AI tools configured just-so, and the need to access all of it from anywhere.
 
