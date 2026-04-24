@@ -44,17 +44,7 @@ Supported platforms: **macOS** (arm64, amd64) · **Linux** (arm64, amd64)
 
 ## Quick Start
 
-### Option A — Interactive menu (recommended)
-
-Just run the binary with no arguments:
-
-```bash
-shellrelay
-```
-
-An interactive menu launches. Use arrow keys or number keys to navigate.
-
-### Option B — Command line
+### Option A — Command line (recommended)
 
 1. Register your server — generates a claim token, saves credentials, and starts the daemon:
 
@@ -66,7 +56,7 @@ shellrelay announce --email you@gmail.com <server-id>
 
 That's it. The daemon is already running and ready to accept connections.
 
-### Option C — Register from the UI, then run
+### Option B — Register from the UI, then run
 
 1. Log in to [shellrelay.com](https://www.shellrelay.com) and create a new server from the dashboard.
 2. Copy the connect command shown — it looks like:
@@ -76,6 +66,16 @@ shellrelay start <server-id> <token>
 ```
 
 3. Run it on your machine. Credentials are saved and the daemon starts immediately.
+
+### Option C — Interactive menu
+
+Just run the binary with no arguments:
+
+```bash
+shellrelay
+```
+
+An interactive menu launches. Use arrow keys or number keys to navigate.
 
 ## Interactive Menu
 
