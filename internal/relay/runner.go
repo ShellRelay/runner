@@ -69,18 +69,28 @@ func Run(cfg Config) {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGTERM, syscall.SIGINT)
 
+	// quit is closed once when a signal is received. Unlike sigCh it can be
+	// selected on multiple times without being consumed, which prevents the
+	// signal-drain race where the inner goroutine consumes the signal before
+	// the outer reconnect loop can observe it.
+	quit := make(chan struct{})
+	go func() {
+		sig := <-sigCh
+		log.Printf("[runner] received %s, shutting down...", sig)
+		close(quit)
+	}()
+
 	backoff := 2 * time.Second
 	const maxBackoff = 30 * time.Second
 
 	for {
 		log.Printf("[runner] connecting to relay as %s ...", cfg.ServerID)
 
-		// Use a context that cancels on SIGTERM/SIGINT
+		// Use a context that cancels when quit is closed.
 		ctx, cancel := context.WithCancel(context.Background())
 		go func() {
 			select {
-			case sig := <-sigCh:
-				log.Printf("[runner] received %s, shutting down...", sig)
+			case <-quit:
 				cancel()
 			case <-ctx.Done():
 			}
@@ -89,9 +99,9 @@ func Run(cfg Config) {
 		err := connect(ctx, cfg)
 		cancel()
 
-		// Check if we were signalled to stop
+		// Check if we were signalled to stop (quit is a closed channel — always readable).
 		select {
-		case <-sigCh:
+		case <-quit:
 			log.Printf("[runner] shutting down")
 			return
 		default:

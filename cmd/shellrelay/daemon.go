@@ -225,7 +225,7 @@ func cmdStop(_ []string) {
 	}
 	// Force kill if still running
 	if isRunning(pid) {
-		proc.Signal(syscall.SIGKILL)
+		_ = proc.Signal(syscall.SIGKILL)
 		time.Sleep(500 * time.Millisecond)
 	}
 
@@ -249,7 +249,7 @@ func cmdRestart(args []string) {
 			time.Sleep(250 * time.Millisecond)
 		}
 		if isRunning(pid) {
-			proc.Signal(syscall.SIGKILL)
+			_ = proc.Signal(syscall.SIGKILL)
 			time.Sleep(500 * time.Millisecond)
 		}
 		removePID()

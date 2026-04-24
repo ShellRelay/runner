@@ -1,6 +1,88 @@
 package main
 
-import "testing"
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"runtime"
+	"strings"
+	"testing"
+)
+
+func TestVerifyChecksum(t *testing.T) {
+	// Create a temp file with known content.
+	f, err := os.CreateTemp(t.TempDir(), "checksum_test_*")
+	if err != nil {
+		t.Fatalf("create temp: %v", err)
+	}
+	f.WriteString("hello shellrelay checksum test")
+	f.Close()
+
+	// Compute the expected SHA256.
+	data, _ := os.ReadFile(f.Name())
+	h := sha256.New()
+	h.Write(data)
+	correctHash := hex.EncodeToString(h.Sum(nil))
+
+	wantName := fmt.Sprintf("shellrelay-%s-%s", runtime.GOOS, runtime.GOARCH)
+
+	t.Run("correct checksum passes", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "%s  %s\n", correctHash, wantName)
+		}))
+		defer srv.Close()
+
+		if err := verifyChecksum(f.Name(), srv.URL); err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("wrong checksum returns error", func(t *testing.T) {
+		badHash := strings.Repeat("0", 64)
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "%s  %s\n", badHash, wantName)
+		}))
+		defer srv.Close()
+
+		err := verifyChecksum(f.Name(), srv.URL)
+		if err == nil {
+			t.Error("expected checksum mismatch error, got nil")
+		}
+		if !strings.Contains(err.Error(), "checksum mismatch") {
+			t.Errorf("error message should mention 'checksum mismatch', got: %v", err)
+		}
+	})
+
+	t.Run("missing entry returns error", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "%s  other-os-other-arch\n", correctHash)
+		}))
+		defer srv.Close()
+
+		err := verifyChecksum(f.Name(), srv.URL)
+		if err == nil {
+			t.Error("expected 'no checksum found' error, got nil")
+		}
+		if !strings.Contains(err.Error(), "no checksum found") {
+			t.Errorf("error should mention 'no checksum found', got: %v", err)
+		}
+	})
+
+	t.Run("empty checksums file returns error", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// empty body
+		}))
+		defer srv.Close()
+
+		err := verifyChecksum(f.Name(), srv.URL)
+		if err == nil {
+			t.Error("expected error for empty checksums file, got nil")
+		}
+	})
+}
 
 func TestCompareSemver(t *testing.T) {
 	tests := []struct {

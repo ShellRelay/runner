@@ -1,9 +1,62 @@
 package main
 
 import (
+	"os"
 	"testing"
 	"time"
 )
+
+func TestCastDuration(t *testing.T) {
+	tests := []struct {
+		name    string
+		content string
+		want    float64
+	}{
+		{
+			name:    "single event",
+			content: "{\"version\":2,\"width\":220,\"height\":50}\n[1.5,\"o\",\"hello\"]\n",
+			want:    1.5,
+		},
+		{
+			name:    "multiple events — returns last timestamp",
+			content: "{\"version\":2,\"width\":220,\"height\":50}\n[0.1,\"o\",\"a\"]\n[2.3,\"o\",\"b\"]\n[5.7,\"o\",\"c\"]\n",
+			want:    5.7,
+		},
+		{
+			name:    "header only — no events",
+			content: "{\"version\":2,\"width\":220,\"height\":50}\n",
+			want:    0,
+		},
+		{
+			name:    "non-event lines are ignored",
+			content: "{\"version\":2,\"width\":220,\"height\":50}\nnot an event\n[3.0,\"o\",\"x\"]\n",
+			want:    3.0,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			f, err := os.CreateTemp(t.TempDir(), "cast_test_*.cast")
+			if err != nil {
+				t.Fatalf("create temp: %v", err)
+			}
+			f.WriteString(tc.content)
+			f.Close()
+
+			got := castDuration(f.Name())
+			if got != tc.want {
+				t.Errorf("castDuration() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+
+	t.Run("nonexistent file returns 0", func(t *testing.T) {
+		got := castDuration("/nonexistent/path/does_not_exist.cast")
+		if got != 0 {
+			t.Errorf("castDuration(nonexistent) = %v, want 0", got)
+		}
+	})
+}
 
 func TestFmtDuration(t *testing.T) {
 	tests := []struct {

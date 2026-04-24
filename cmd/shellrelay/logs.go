@@ -42,8 +42,10 @@ func cmdLogs(args []string) {
 		// Print all (or tail then follow)
 		if *nLines > 0 {
 			printLastN(f, *nLines)
-			// Seek to end for follow
-			f.Seek(0, io.SeekEnd)
+			// Seek to end for follow; log a warning if it fails (non-seekable fd).
+			if _, err := f.Seek(0, io.SeekEnd); err != nil {
+				fmt.Fprintf(os.Stderr, "logs: seek to end: %v\n", err)
+			}
 		} else {
 			io.Copy(os.Stdout, f)
 		}
