@@ -30,7 +30,7 @@ An interactive menu launches. Use arrow keys or number keys to navigate.
 
 ### Option B — Command line
 
-1. Register your server (generates a claim token):
+1. Register your server — this generates a claim token and saves credentials locally:
 
 ```bash
 shellrelay announce --email you@gmail.com <server-id>
@@ -38,10 +38,10 @@ shellrelay announce --email you@gmail.com <server-id>
 
 2. Log in to [shellrelay.com](https://www.shellrelay.com) and claim the server using the token printed above.
 
-3. Start the daemon:
+That's it. Your credentials are saved. Start the daemon any time with:
 
 ```bash
-shellrelay start <server-id> <token>
+shellrelay start
 ```
 
 Open [shellrelay.com](https://www.shellrelay.com), click **Connect**, and you have a browser terminal.
