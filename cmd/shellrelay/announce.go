@@ -93,6 +93,9 @@ func cmdAnnounce(args []string) {
 		fmt.Println("  claim this server with the token above.")
 		fmt.Println()
 		fmt.Println("  To re-announce, delete ~/.shellrelay/config")
+		fmt.Println()
+		fmt.Println("  Starting daemon...")
+		cmdStart(nil)
 		return
 	}
 
@@ -163,4 +166,8 @@ func cmdAnnounce(args []string) {
 	fmt.Println("  Log in to https://www.shellrelay.com and")
 	fmt.Println("  claim this server with the token above.")
 	fmt.Println()
+
+	// Auto-start the daemon so it's ready the moment the user claims the server.
+	fmt.Println("  Starting daemon...")
+	cmdStart(nil)
 }
