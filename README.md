@@ -4,26 +4,29 @@ Lightweight Go binary that connects any machine to [ShellRelay](https://www.shel
 
 ## Why ShellRelay?
 
-A new wave of AI coding tools runs entirely in the terminal.
+ShellRelay was built to solve a personal gap. AI coding tools — [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex CLI](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-deepmind/gemini-cli), [OpenCode](https://opencode.ai) — run entirely in the terminal. The goal was simple: use those tools on a local Mac and in VPS Docker containers from anywhere — a phone, a tablet, any browser — without VPN, without SSH key management, and without port forwarding. Nothing in the market covered all of that. So ShellRelay was built from scratch.
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex CLI](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-deepmind/gemini-cli), and [OpenCode](https://opencode.ai) are agent-based tools that operate through shell sessions — reading files, running tests, committing code, and iterating autonomously. Unlike IDE plugins that assist one line at a time, these agents work end-to-end through the terminal. For developers building with them, the shell session *is* the development environment.
+## The Problem
 
-The problem: **that environment is tied to wherever you are sitting.**
+Getting terminal access to a remote machine is harder than it should be.
 
-Your Mac has the context — the repos, the running containers, the configured AI tools. Your VPS has the compute. But the moment you step away from your desk — open your phone, switch to a tablet, work from a different machine — you lose the thread. You can't reach your running AI session. You can't pick up where you left off. Nothing in the market solves this cleanly for the way developers actually work today: multiple machines, Docker containers, AI tools configured just-so, and the need to access all of it from anywhere.
+The traditional approach — SSH — requires open ports, firewall rules, and distributed key management. On machines behind NAT, corporate firewalls, or cloud security groups that restrict inbound traffic, SSH often isn't an option at all. For Docker containers, you need access to the host first. For team environments, sharing SSH credentials is a security risk.
 
-That gap is why ShellRelay exists. It was built out of a personal need to use every AI CLI tool — on a local Mac and on VPS Docker containers — from any device, at any time, without VPN setup, without SSH key management, and without losing session state.
+The result: engineers spend time fighting infrastructure just to reach a machine.
 
-**The architecture is intentionally simple.** Instead of you connecting *in* to the machine, the machine connects *out* to the relay. Your browser or mobile device connects to the relay — and the relay bridges the two.
+## The Solution
+
+ShellRelay flips the connection model. Instead of you connecting *in* to the machine, the machine connects *out* to the relay. Your browser then connects to the relay — and the relay bridges the two.
 
 - No inbound ports required
 - No SSH keys to generate or distribute
 - No VPN to configure
 - Works through any firewall, NAT, or cloud security group
-- Mac, VPS, Docker container, Kubernetes Pod — all reachable from any browser or mobile device
-- One binary. Register once. Available everywhere.
+- Access any machine, Docker container, or Kubernetes Pod from any browser, anywhere
 
-**Security:** ShellRelay is a relay only — it never stores terminal data. All traffic is encrypted in transit (TLS). Session recordings are saved exclusively on your local machine. Each server authenticates with a unique token (`sr_*`) that you generate and can rotate at any time.
+The runner is a single static binary. Install it, register the server once, and it is accessible from [shellrelay.com](https://www.shellrelay.com) immediately.
+
+**Security:** ShellRelay acts as a relay only. Terminal data is encrypted in transit (TLS) and never stored on ShellRelay servers. Session recordings are saved exclusively on your local machine. Each server authenticates with a unique token (`sr_*`) that you control and can rotate at any time.
 
 ## 30-Second Demo
 
