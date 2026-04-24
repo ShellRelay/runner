@@ -14,14 +14,56 @@ Supported platforms: **macOS** (arm64, amd64) · **Linux** (arm64, amd64)
 
 ## Quick Start
 
-1. Sign in at [shellrelay.com](https://www.shellrelay.com) and register a server — copy the ID and token.
-2. Start the runner:
+### Option A — Interactive menu (recommended)
+
+Just run the binary with no arguments:
+
+```bash
+shellrelay
+```
+
+An interactive menu launches. Use arrow keys or number keys to navigate.
+
+### Option B — Command line
+
+1. Register your server (generates a claim token):
+
+```bash
+shellrelay announce --email you@gmail.com <server-id>
+```
+
+2. Log in to [shellrelay.com](https://www.shellrelay.com) and claim the server using the token printed above.
+
+3. Start the daemon:
 
 ```bash
 shellrelay start <server-id> <token>
 ```
 
-That's it. Open [shellrelay.com](https://www.shellrelay.com), click **Connect**, and you have a browser terminal.
+Open [shellrelay.com](https://www.shellrelay.com), click **Connect**, and you have a browser terminal.
+
+## Interactive Menu
+
+Running `shellrelay` (or `shellrelay menu`) launches a full interactive menu:
+
+```
+╔══════════════════════════════════════════════════╗
+│                    ShellRelay                    │
+╠══════════════════════════════════════════════════╣
+│  ▶   1. Register server with Gmail account       │
+│      2. Start daemon                             │
+│      3. Stop daemon                              │
+│      ...                                         │
+╠══════════════════════════════════════════════════╣
+│      0. Exit                                     │
+╚══════════════════════════════════════════════════╝
+
+  ↑↓ to move   Enter to select   q to quit
+```
+
+- Arrow keys or number keys (1–9) to select
+- Enter to confirm
+- `q` or `0` to exit
 
 ## Docker
 
@@ -36,44 +78,64 @@ ENTRYPOINT ["entrypoint.sh"]
 ```
 
 ```bash
-docker run -e SHELLRELAY_EMAIL=you@example.com \
+docker run -e SHELLRELAY_EMAIL=you@gmail.com \
            -e SHELLRELAY_SERVER_ID=my-container \
            myimage
 ```
 
-The container self-registers. Check `docker logs` for the claim token, then claim it in the dashboard.
+The container self-registers on startup. Check `docker logs` for the claim token, then claim it in the dashboard.
 
 ## Commands
 
 ```
-shellrelay start     Start as a background daemon (recommended)
-shellrelay stop      Stop the daemon
-shellrelay restart   Restart the daemon
-shellrelay status    Check if the daemon is running
-shellrelay logs      Tail daemon logs (-f to follow, -n <lines>)
-shellrelay run       Run in foreground (no daemon)
-shellrelay announce  Self-register with the relay (Docker / headless use)
-shellrelay rotate    Rotate the server token and restart
-shellrelay relay     Set a custom relay server URL and restart
-shellrelay sessions  List saved session recordings (asciicast)
-shellrelay upgrade   Download and install the latest release
-shellrelay daemon    Register/remove login service (launchd/systemd)
-shellrelay version   Print version
-shellrelay help      Show usage
+shellrelay               Launch interactive menu (default when no args)
+shellrelay menu          Launch interactive menu explicitly
+
+shellrelay start         Start as a background daemon
+shellrelay stop          Stop the daemon
+shellrelay restart       Restart the daemon
+shellrelay status        Check if the daemon is running
+shellrelay logs          Tail daemon logs (-f to follow, -n <lines>)
+shellrelay run           Run in foreground (no daemon)
+
+shellrelay announce      Self-register with the relay (generates claim token)
+shellrelay rotate        Rotate the server token and restart
+shellrelay relay         Set a custom relay server URL and restart
+shellrelay sessions      List saved session recordings (asciicast)
+shellrelay upgrade       Download and install the latest release
+shellrelay daemon        Register/remove login service (launchd/systemd)
+
+shellrelay version       Print version
+shellrelay help          Show usage
 ```
 
-## Build from Source
+### announce
+
+Self-registers this machine with ShellRelay. The runner generates its own token and sends it to the relay. You then claim the server in the dashboard.
 
 ```bash
-git clone https://github.com/ShellRelay/runner.git
-cd runner
-go build -ldflags "-s -w -X main.Version=$(cat VERSION)" -o shellrelay ./cmd/shellrelay
+shellrelay announce --email you@gmail.com <server-id>
+shellrelay announce --email you@gmail.com --name "My Server" <server-id>
 ```
 
-Or use the upgrade script to build and install in one step:
+Running announce again on the same server ID prints the saved token — useful if you need to reclaim.
+
+### relay
+
+Sets a custom relay URL, saves it to config, and restarts the daemon if running.
 
 ```bash
-./upgrade.sh
+shellrelay relay --url wss://your-relay.example.com
+shellrelay relay --url your-relay.example.com   # wss:// prepended automatically
+```
+
+### daemon
+
+Registers or removes the runner as a login service (auto-starts on reboot):
+
+```bash
+shellrelay daemon install    # macOS: launchd, Linux: systemd
+shellrelay daemon uninstall
 ```
 
 ## Configuration
@@ -87,11 +149,20 @@ SHELLRELAY_TOKEN=sr_xxxxxxxxxxxxxxxxxxxx
 ```
 
 The relay URL defaults to `wss://prod-api.shellrelay.com` (compiled into the binary). Override with:
-- `shellrelay relay --url wss://your-server.com` — persists to `~/.shellrelay/config`, restarts daemon automatically
-- `--relay wss://your-server.com` flag on `start` or `run`
-- `SHELLRELAY_URL=wss://your-server.com` environment variable
+
+- `shellrelay relay --url <url>` — persists to config, restarts daemon automatically
+- `--relay <url>` flag on `start` or `run`
+- `SHELLRELAY_URL=<url>` environment variable
 
 Priority: `--relay` flag > `SHELLRELAY_URL` env > `~/.shellrelay/config` > compiled-in default
+
+## Build from Source
+
+```bash
+git clone https://github.com/ShellRelay/runner.git
+cd runner
+go build -ldflags "-s -w -X main.Version=$(cat VERSION)" -o shellrelay ./cmd/shellrelay
+```
 
 ## How It Works
 
