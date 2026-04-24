@@ -2,6 +2,28 @@
 
 Lightweight Go binary that connects any machine to [ShellRelay](https://www.shellrelay.com) for browser-based terminal access. No VPN, no SSH keys, no port forwarding.
 
+## The Problem
+
+Getting terminal access to a remote machine is harder than it should be.
+
+The traditional approach — SSH — requires open ports, firewall rules, and distributed key management. On machines behind NAT, corporate firewalls, or cloud security groups that restrict inbound traffic, SSH often isn't an option at all. For Docker containers, you need access to the host first. For team environments, sharing SSH credentials is a security risk.
+
+The result: engineers spend time fighting infrastructure just to reach a machine.
+
+## The Solution
+
+ShellRelay flips the connection model. Instead of you connecting *in* to the machine, the machine connects *out* to the relay. Your browser then connects to the relay — and the relay bridges the two.
+
+- No inbound ports required
+- No SSH keys to generate or distribute
+- No VPN to configure
+- Works through any firewall, NAT, or cloud security group
+- Access any machine from any browser, anywhere
+
+The runner is a single static binary. Install it, register the server once, and it is accessible from [shellrelay.com](https://www.shellrelay.com) immediately.
+
+**Security:** ShellRelay acts as a relay only. Terminal data is encrypted in transit (TLS) and never stored on ShellRelay servers. Session recordings are saved exclusively on your local machine. Each server authenticates with a unique token (`sr_*`) that you control and can rotate at any time.
+
 ## 30-Second Demo
 
 ![ShellRelay demo](demo.svg)
@@ -188,8 +210,6 @@ go build -ldflags "-s -w -X main.Version=$(cat VERSION)" -o shellrelay ./cmd/she
 2. When you click **Connect** in the dashboard, the relay bridges your browser to the runner.
 3. The runner spawns a PTY (pseudo-terminal) and streams I/O over the WebSocket.
 4. Sessions are recorded locally as [asciicast](https://docs.asciinema.org/manual/asciicast/v2/) files — they never leave your machine.
-
-**Security:** ShellRelay acts as a relay only. Your terminal data is streamed over an encrypted WebSocket (TLS) and is never stored on ShellRelay servers. Session recordings are saved exclusively on your local machine. The runner authenticates with a server-specific token (`sr_*`) that you control and can rotate at any time with `shellrelay rotate`.
 
 ## Contributing
 
