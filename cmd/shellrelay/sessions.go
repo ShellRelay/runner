@@ -37,6 +37,10 @@ func cmdSessions(args []string) {
 
 	entries, err := os.ReadDir(dir)
 	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("No sessions recorded yet.")
+			return
+		}
 		fmt.Fprintf(os.Stderr, "sessions: read dir: %v\n", err)
 		os.Exit(1)
 	}
