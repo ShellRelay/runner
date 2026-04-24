@@ -50,12 +50,21 @@ Running `shellrelay` (or `shellrelay menu`) launches a full interactive menu:
 ╔══════════════════════════════════════════════════╗
 │                    ShellRelay                    │
 ╠══════════════════════════════════════════════════╣
-│  ▶   1. Register server with Gmail account       │
-│      2. Start daemon                             │
-│      3. Stop daemon                              │
-│      ...                                         │
+│       1. Register server with Gmail account      │
+│       2. Start daemon                            │
+│       3. Stop daemon                             │
+│       4. Restart daemon                          │
+│       5. Status                                  │
+│       6. Logs                                    │
+│       7. Sessions                                │
+│       8. Rotate token                            │
+│       9. Set relay URL                           │
+│      10. Upgrade to latest release               │
+│      11. Daemon install                          │
+│      12. Daemon uninstall                        │
+│      13. Version                                 │
 ╠══════════════════════════════════════════════════╣
-│      0. Exit                                     │
+│       0. Exit                                    │
 ╚══════════════════════════════════════════════════╝
 
   ↑↓ to move   Enter to select   q to quit
@@ -169,7 +178,9 @@ go build -ldflags "-s -w -X main.Version=$(cat VERSION)" -o shellrelay ./cmd/she
 1. The runner opens a WebSocket connection to the ShellRelay relay server.
 2. When you click **Connect** in the dashboard, the relay bridges your browser to the runner.
 3. The runner spawns a PTY (pseudo-terminal) and streams I/O over the WebSocket.
-4. Sessions are recorded locally as [asciicast](https://docs.asciinema.org/manual/asciicast/v2/) files.
+4. Sessions are recorded locally as [asciicast](https://docs.asciinema.org/manual/asciicast/v2/) files — they never leave your machine.
+
+**Security:** ShellRelay acts as a relay only. Your terminal data is streamed over an encrypted WebSocket (TLS) and is never stored on ShellRelay servers. Session recordings are saved exclusively on your local machine. The runner authenticates with a server-specific token (`sr_*`) that you control and can rotate at any time with `shellrelay rotate`.
 
 ## Contributing
 
