@@ -8,7 +8,7 @@ import (
 	"github.com/ShellRelay/runner/internal/relay"
 )
 
-const DefaultRelayURL = "wss://prod-api.shellrelay.com"
+const DefaultRelayURL = "wss://api.shellrelay.com"
 
 func cmdRun(args []string) {
 	fs := flag.NewFlagSet("run", flag.ExitOnError)
