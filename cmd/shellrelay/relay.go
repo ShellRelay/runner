@@ -17,7 +17,7 @@ func cmdRelay(args []string) {
 		log.Printf("Usage: shellrelay relay --url <hostname or wss://...>\n\nPersist a custom relay server URL to ~/.shellrelay/config and restart the daemon.\nIf no scheme is provided, wss:// is assumed.\n\nOptions:")
 		fs.PrintDefaults()
 	}
-	flagURL := fs.String("url", "", "Relay server hostname or WebSocket URL (e.g. prod-api.shellrelay.com or wss://prod-api.shellrelay.com)")
+	flagURL := fs.String("url", "", "Relay server hostname or WebSocket URL (e.g. api.shellrelay.com or wss://api.shellrelay.com)")
 	fs.Parse(args)
 
 	url := *flagURL

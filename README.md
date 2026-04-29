@@ -192,7 +192,7 @@ SHELLRELAY_TOKEN=sr_xxxxxxxxxxxxxxxxxxxx
 # SHELLRELAY_URL=wss://your-custom-relay.com   (optional, set via: shellrelay relay --url <url>)
 ```
 
-The relay URL defaults to `wss://prod-api.shellrelay.com` (compiled into the binary). Override with:
+The relay URL defaults to `wss://api.shellrelay.com` (compiled into the binary). Override with:
 
 - `shellrelay relay --url <url>` — persists to config, restarts daemon automatically
 - `--relay <url>` flag on `start` or `run`
